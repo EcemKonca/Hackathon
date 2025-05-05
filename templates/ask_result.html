@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Python Sorusu Yanıtı</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+  <style>
+    body { font-family: Arial; background: #f7f7f7; padding: 40px; }
+    .container {
+      max-width: 800px; margin: auto; background: white; border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 30px;
+    }
+    h2 { text-align: center; color: #333; }
+    .ai-box {
+      background: #fdfdfd; border-left: 5px solid #27ae60;
+      padding: 20px; border-radius: 8px; margin-top: 30px;
+    }
+    .ai-box-title { font-weight: bold; color: #27ae60; margin-bottom: 10px; }
+    pre { background: #1e1e1e; color: #f8f8f2; padding: 15px; border-radius: 8px; overflow-x: auto; }
+    .buttons { text-align: center; margin-top: 40px; }
+    .buttons a {
+      background: #27ae60; color: white; padding: 10px 20px;
+      border-radius: 6px; text-decoration: none; font-size: 14px;
+    }
+    .buttons a:hover { background: #219150; }
+    .feedback {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 16px;
+      color: #333;
+    }
+    .feedback button {
+      font-size: 24px;
+      margin: 0 10px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    #feedback-msg {
+      margin-top: 10px;
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Python Sorusu Yanıtı</h2>
+
+  <div class="ai-box">
+    <div class="ai-box-title">Sorun</div>
+    <pre><code class="language-python">{{ prompt }}</code></pre>
+  </div>
+
+  <div class="ai-box">
+    <div class="ai-box-title">AI Yanıtı</div>
+    <pre><code class="language-python">{{ response }}</code></pre>
+  </div>
+
+  <div class="buttons">
+    <a href="/dashboard">Ana Menüye Dön</a>
+  </div>
+   <div class="feedback">
+    <p>Bu yanıtı faydalı buldunuz mu?</p>
+    <button onclick="handleFeedback('like')">👍</button>
+    <button onclick="handleFeedback('dislike')">👎</button>
+    <p id="feedback-msg"></p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+<script>
+  function handleFeedback(type) {
+    const msg = document.getElementById('feedback-msg');
+    if (type === 'like') {
+      msg.textContent = "Geri bildiriminiz için teşekkür ederiz! 👍";
+    } else {
+      msg.textContent = "Üzgünüz, daha iyi olması için çalışacağız. 👎";
+    }
+  }
+</script>
+</body>
+</html>
