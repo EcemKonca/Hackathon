@@ -1,5 +1,5 @@
 from datetime import timedelta, datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from pydantic import BaseModel
 from passlib.context import CryptContext
@@ -7,6 +7,8 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
 from jose import jwt, JWTError
+from starlette.responses import RedirectResponse
+
 from database import SessionLocal
 from models import User
 
@@ -75,23 +77,40 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
+async def create_user(
+        db: db_dependency,
+        username: str = Form(...),
+        email: str = Form(...),
+        first_name: str = Form(...),
+        last_name: str = Form(...),
+        password: str = Form(...),
+        phone_number: str = Form(...)
+):
     user = User(
-        username=create_user_request.username,
-        email=create_user_request.email,
-        first_name=create_user_request.first_name,
-        last_name=create_user_request.last_name,
-        phone_number=create_user_request.phone_number,
-        hashed_password=bcrypt_context.hash(create_user_request.password)
+        username=username,
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        phone_number=phone_number,
+        hashed_password=bcrypt_context.hash(password)
     )
     db.add(user)
     db.commit()
+    return RedirectResponse(url="/dashboard", status_code=status.HTTP_302_FOUND)
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency):
-    user = authenticate_user(form_data.username, form_data.password, db)
+async def login_for_access_token(
+        db: db_dependency,
+        username: str = Form(...),
+        password: str = Form(...)
+):
+    user = authenticate_user(username, password, db)
     if not user:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Kullanıcı adı veya şifre hatalı"
+        )
+
     token = create_access_token(user.username, user.id, timedelta(minutes=60))
     return {"access_token": token, "token_type": "bearer"}
